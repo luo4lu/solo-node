@@ -1,0 +1,11 @@
+[workspace]
+members = [
+
+	"frame/evm/precompile/call-vm",
+	"frame/vm-bridge",
+	"node",
+	"runtime",
+]
+
+[profile.release]
+panic = "unwind"
