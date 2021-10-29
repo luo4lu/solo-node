@@ -1,7 +1,7 @@
 use frontier_template_runtime::{
 	AccountId, BabeConfig, BalancesConfig, EVMConfig, EthereumConfig, GenesisConfig, GrandpaConfig,
 	Signature, SudoConfig, SystemConfig, WASM_BINARY,StakerStatus,{opaque::SessionKeys as SessionKeys}, DOLLARS, SessionConfig, StakingConfig,
-	BABE_GENESIS_EPOCH_CONFIG,ContractsConfig
+	BABE_GENESIS_EPOCH_CONFIG,ContractsConfig, ImOnlineConfig
 };
 use sc_service::ChainType;
 use sp_consensus_babe::AuthorityId as BabeId;
@@ -11,6 +11,7 @@ use sp_runtime::traits::{IdentifyAccount, Verify};
 use std::{collections::BTreeMap, str::FromStr};
 use sp_runtime::{Perbill};
 use pallet_rgrandpa::AuthorityId as RGrandpaId;
+use pallet_im_online::sr25519::{AuthorityId as ImOnlineId};
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
@@ -35,13 +36,14 @@ where
 }
 
 /// Generate an Aura authority key.
-pub fn authority_keys_from_seed(seed: &str) -> (AccountId, AccountId, BabeId, GrandpaId, RGrandpaId) {
+pub fn authority_keys_from_seed(seed: &str) -> (AccountId, AccountId, BabeId, GrandpaId, RGrandpaId, ImOnlineId) {
 	(
 		get_account_id_from_seed::<sr25519::Public>(&format!("{}//stash", seed)),
 		get_account_id_from_seed::<sr25519::Public>(seed),
 		get_from_seed::<BabeId>(seed),
 		get_from_seed::<GrandpaId>(seed),
 		get_from_seed::<RGrandpaId>(seed),
+		get_from_seed::<ImOnlineId>(seed)
 	)
 }
 
@@ -141,7 +143,7 @@ pub fn local_testnet_config() -> Result<ChainSpec, String> {
 /// Configure initial storage state for FRAME modules.
 fn testnet_genesis(
 	wasm_binary: &[u8],
-	initial_authorities: Vec<(AccountId, AccountId, BabeId, GrandpaId, RGrandpaId)>,
+	initial_authorities: Vec<(AccountId, AccountId, BabeId, GrandpaId, RGrandpaId, ImOnlineId)>,
 	root_key: AccountId,
 	endowed_accounts: Vec<AccountId>,
 	enable_println: bool,
@@ -172,6 +174,11 @@ fn testnet_genesis(
 			authorities: vec![],
 			epoch_config: Some(BABE_GENESIS_EPOCH_CONFIG),
 		},
+		/* add online of Punishment module*/
+		pallet_im_online: ImOnlineConfig {
+			keys: vec![],
+		},
+		/* end online */
 		pallet_grandpa: GrandpaConfig {
 			authorities: vec![],
 		},
@@ -180,7 +187,7 @@ fn testnet_genesis(
 				log::info!("========================================{},{},{},{}",x.0.clone(),x.1.clone(),x.2.clone(),x.3.clone());
 				(x.0.clone(),
 				 x.0.clone(),
-				 SessionKeys { babe:  x.2.clone(), grandpa: x.3.clone(), rgrandpa: x.4.clone()}
+				 SessionKeys { babe:  x.2.clone(), grandpa: x.3.clone(), rgrandpa: x.4.clone(), im_online: x.5.clone()}
 				)
 			}).collect::<Vec<_>>(),
 		},

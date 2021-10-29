@@ -11,12 +11,14 @@ include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 use codec::{Decode, Encode};
 use pallet_grandpa::fg_primitives;
 use pallet_grandpa::{AuthorityId as GrandpaId, AuthorityList as GrandpaAuthorityList};
+use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
 use sp_api::impl_runtime_apis;
 use sp_consensus_babe::AuthorityId as BabeId;
 use pallet_rgrandpa::{self,AuthorityId as RGrandpaId};
 use sp_core::{crypto::KeyTypeId, OpaqueMetadata, H160, H256, U256};
 use sp_runtime::traits::{
-	AccountIdLookup, BlakeTwo256, Block as BlockT, IdentifyAccount, NumberFor, Verify,OpaqueKeys
+	AccountIdLookup, BlakeTwo256, Block as BlockT, IdentifyAccount, NumberFor, 
+	Verify,OpaqueKeys, Convert,
 };
 use sp_runtime::{
 	curve::PiecewiseLinear,
@@ -61,7 +63,7 @@ use sp_core::crypto::{Public, UncheckedFrom};
 pub use sp_runtime::BuildStorage;
 pub use sp_runtime::{Perbill, Permill};
 /*** Add This Line ***/
-use pallet_contracts::weights::WeightInfo;
+use pallet_contracts::{weights::WeightInfo, BalanceOf};
 use pallet_contracts::chain_extension;
 use pallet_contracts::chain_extension::{Result as ExtensionResult, InitState, Environment, Ext, RetVal, SysConfig};
 use frame_support::dispatch::DispatchError;
@@ -115,6 +117,7 @@ pub mod opaque {
 			pub babe: Babe,
 			pub grandpa: Grandpa,
 			pub rgrandpa: RGrandpa,
+			pub im_online: ImOnline,
 		}
 	}
 }
@@ -256,6 +259,40 @@ impl pallet_grandpa::Config for Runtime {
 	type HandleEquivocation = ();
 
 	type WeightInfo = ();
+}
+
+//this add offences and im-online of record penalty action
+parameter_types! {
+	pub OffencesWeightSoftLimit: Weight = Perbill::from_percent(60) *
+		BlockWeights::get().max_block;
+}
+
+impl pallet_offences::Config for Runtime {
+	type Event = Event;
+	type IdentificationTuple = pallet_session::historical::IdentificationTuple<Self>;
+	type OnOffenceHandler = Staking;
+	type WeightSoftLimit = OffencesWeightSoftLimit;
+}
+// this add authorship realize the reward function to the witness
+parameter_types! {
+	pub const UncleGenerations: BlockNumber = 5;
+}
+
+impl pallet_authorship::Config for Runtime {
+	type FindAuthor = pallet_session::FindAccountFromAuthorIndex<Self, Babe>;
+	type UncleGenerations = UncleGenerations;
+	type FilterUncle = ();
+	type EventHandler = (Staking, ImOnline);
+}
+
+impl pallet_im_online::Config for Runtime {
+	type AuthorityId = ImOnlineId;
+	type Event = Event;
+	type NextSessionRotation = Babe;
+	type ValidatorSet = Historical;
+	type ReportUnresponsiveness = Offences;
+	type UnsignedPriority = ImOnlineUnsignedPriority;
+	type WeightInfo = pallet_im_online::weights::SubstrateWeight<Runtime>;
 }
 parameter_types! {
 
@@ -407,13 +444,13 @@ parameter_types! {
         1,
         sp_std::mem::size_of::<pallet_contracts::ContractInfo<Runtime>>() as u32
     );
-    pub const DepositPerContract: Balance = TombstoneDeposit::get();
+    pub const DepositPerContract: Balance = 8 * DepositPerStorageByte::get();
     pub const DepositPerStorageByte: Balance = deposit(0, 1);
     pub const DepositPerStorageItem: Balance = deposit(1, 0);
-    pub RentFraction: Perbill = Perbill::from_rational_approximation(1u32, 30 * DAYS);
+    pub RentFraction: Perbill = Perbill::from_rational(1u32, 30 * DAYS);
     pub const SurchargeReward: Balance = 150 * MILLICENTS;
     pub const SignedClaimHandicap: u32 = 2;
-    pub const MaxDepth: u32 = 32;
+    pub const MaxDepth: u32 = 100;
     pub const MaxValueSize: u32 = 16 * 1024;
     // The lazy deletion runs inside on_initialize.
     pub DeletionWeightLimit: Weight = AVERAGE_ON_INITIALIZE_RATIO *
@@ -424,7 +461,13 @@ parameter_types! {
             <Runtime as pallet_contracts::Config>::WeightInfo::on_initialize_per_queue_item(1) -
             <Runtime as pallet_contracts::Config>::WeightInfo::on_initialize_per_queue_item(0)
         )) / 5) as u32;
-    pub MaxCodeSize: u32 = 512 * 1024;
+    pub MaxCodeSize: u32 = 128*1024;
+}
+
+impl Convert<Weight, BalanceOf<Self>> for Runtime {
+	fn convert(w: Weight) -> BalanceOf<Self> {
+		w.into()
+	}
 }
 
 impl pallet_contracts::Config for Runtime {
@@ -600,6 +643,7 @@ construct_runtime!(
 		Timestamp: pallet_timestamp::{Module, Call, Storage, Inherent},
 		Babe: pallet_babe::{Module, Call, Storage, Config, ValidateUnsigned},
 		Grandpa: pallet_grandpa::{Module, Call, Storage, Config, Event},
+		Authorship: pallet_authorship::{Module, Call, Storage, Inherent},
 		Balances: pallet_balances::{Module, Call, Storage, Config<T>, Event<T>},
 		TransactionPayment: pallet_transaction_payment::{Module, Storage},
 		Sudo: pallet_sudo::{Module, Call, Config<T>, Storage, Event<T>},
@@ -614,6 +658,8 @@ construct_runtime!(
 		Contracts: pallet_contracts::{Module, Call, Config<T>, Storage, Event<T>},
 		GvmBridge: pallet_vm_bridge::{Module, Call, Storage, Event<T>},
 		RGrandpa: pallet_rgrandpa::{Module, Call, Storage, Event<T>},
+		Offences: pallet_offences::{Module, Call, Storage, Event},
+		ImOnline: pallet_im_online::{Module, Call, Storage, Event<T>, ValidateUnsigned, Config<T>},
 	}
 );
 
@@ -977,14 +1023,18 @@ impl sp_consensus_babe::BabeApi<Block> for Runtime {
 			config: frame_benchmarking::BenchmarkConfig
 		) -> Result<Vec<frame_benchmarking::BenchmarkBatch>, sp_runtime::RuntimeString> {
 			use frame_benchmarking::{Benchmarking, BenchmarkBatch, add_benchmark, TrackedStorageKey};
+			use pallet_offences_benchmarking::Module as OffencesBench;
 			use pallet_evm::Module as PalletEvmBench;
 			impl frame_system_benchmarking::Config for Runtime {}
+			impl pallet_offences_benchmarking::Config for Runtime {}
 
 			let whitelist: Vec<TrackedStorageKey> = vec![];
 
 			let mut batches = Vec::<BenchmarkBatch>::new();
 			let params = (&config, &whitelist);
 
+			add_benchmark!(params, batches, pallet_im_online, ImOnline);
+			add_benchmark!(params, batches, pallet_offences, OffencesBench::<Runtime>);
 			add_benchmark!(params, batches, pallet_evm, PalletEvmBench::<Runtime>);
 			add_benchmark!(params, batches, pallet_rgrandpa, RGrandpa);
 			if batches.is_empty() { return Err("Benchmark not found for this pallet.".into()) }
