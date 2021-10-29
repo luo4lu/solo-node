@@ -30,6 +30,9 @@ pallet-evm-precompile-modexp = {version = "2.0.0-dev", default-features = false,
 
 pallet-babe = { version = "3.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
 sp-consensus-babe = { version = "0.9.0", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier"  }
+pallet-authorship = { version = "3.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
+pallet-im-online = { version = "3.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
+pallet-offences = { version = "3.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier" } 
 
 pallet-balances = { version = "3.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
 pallet-grandpa = { version = "3.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
@@ -70,6 +73,7 @@ pallet-election-provider-multi-phase = { version = "3.0.0", default-features = f
 # benchmarking dependencies
 frame-benchmarking = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "frontier", optional = true }
 frame-system-benchmarking = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "frontier", optional = true }
+pallet-offences-benchmarking = { git = "https://github.com/paritytech/substrate", default-features = false, branch = "frontier", optional = true }
 pallet-rgrandpa = { default-features = false, path = '../frame/rgrandpa', version = '3.0.0' }
 
 [build-dependencies]
@@ -102,6 +106,9 @@ std = [
 	"pallet-timestamp/std",
 	"pallet-transaction-payment-rpc-runtime-api/std",
 	"pallet-transaction-payment/std",
+	"pallet-authorship/std",
+	"pallet-im-online/std",
+	"pallet-offences/std",
 
 	"sp-api/std",
 	"sp-block-builder/std",

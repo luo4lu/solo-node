@@ -70,6 +70,7 @@ fc-mapping-sync = {version = "2.0.0-dev",  git = "https://github.com/paritytech/
 pallet-contracts  =  { version = '3.0.0' ,git = "https://github.com/paritytech/substrate.git", branch = "frontier"}
 pallet-contracts-rpc  =  { version = '3.0.0' ,git = "https://github.com/paritytech/substrate.git", branch = "frontier"}
 pallet-rgrandpa = { default-features = false, path = '../frame/rgrandpa', version = '3.0.0' }
+pallet-im-online = { version = "3.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
 
 [build-dependencies]
 substrate-build-script-utils = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
