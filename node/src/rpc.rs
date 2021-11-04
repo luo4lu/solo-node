@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 use fc_rpc::{OverrideHandle, RuntimeApiStorageOverride, SchemaV1Override, StorageOverride};
 use fc_rpc_core::types::{FilterPool, PendingTransactions};
-use frontier_template_runtime::{opaque::Block, AccountId, Balance, Hash, Index,BlockNumber};
+use cycan_runtime::{opaque::Block, AccountId, Balance, Hash, Index,BlockNumber};
 use jsonrpc_pubsub::manager::SubscriptionManager;
 use pallet_ethereum::EthereumStorageSchema;
 use sc_client_api::{
@@ -78,7 +78,6 @@ where
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: fp_rpc::EthereumRuntimeRPCApi<Block>,
 	P: TransactionPool<Block = Block> + 'static,
-/*** Add This Line ***/
 	C::Api: pallet_contracts_rpc::ContractsRuntimeApi<Block, AccountId, Balance, BlockNumber>,
 {
 	use fc_rpc::{
@@ -132,7 +131,7 @@ where
 	io.extend_with(EthApiServer::to_delegate(EthApi::new(
 		client.clone(),
 		pool.clone(),
-		frontier_template_runtime::TransactionConverter,
+		cycan_runtime::TransactionConverter,
 		network.clone(),
 		pending_transactions.clone(),
 		signers,
@@ -183,12 +182,10 @@ where
 		}
 		_ => {}
 	}
-	/*** Add This Block ***/
 	// Contracts RPC API extension
 	io.extend_with(
 		ContractsApi::to_delegate(Contracts::new(client.clone()))
 	);
-	/*** End Added Block ***/
 	io
 }
 

@@ -1,11 +1,14 @@
 [workspace]
 members = [
-
 	"frame/evm/precompile/call-vm",
 	"frame/vm-bridge",
 	"node",
 	"runtime",
 ]
+exclude = [
+	"vendor",
+]
 
 [profile.release]
 panic = "unwind"
+

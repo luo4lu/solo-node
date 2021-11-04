@@ -21,7 +21,6 @@
 /// Money matters.
 pub mod currency {
     use crate::common::Balance;
-	use sp_runtime::{Permill, Perbill};
 
 	pub const MILLICENTS: Balance = 1_000_000_000;
 	pub const CENTS: Balance = 1_000 * MILLICENTS;    // assume this is worth about a cent.
@@ -30,11 +29,9 @@ pub mod currency {
 	pub const fn deposit(items: u32, bytes: u32) -> Balance {
 		items as Balance * 15 * CENTS + (bytes as Balance) * 6 * CENTS
 	}
-
-	/// We assume that ~10% of the block weight is consumed by `on_initalize` handlers.
-	/// This is used to limit the maximal weight of a single extrinsic.
-	pub const AVERAGE_ON_INITIALIZE_RATIO: Perbill = Perbill::from_percent(10);
 }
+
+
 
 /// Time.
 pub mod time {

@@ -82,8 +82,6 @@ frame_support::construct_runtime!(
 	}
 );
 
-impl pallet_randomness_collective_flip::Config for Test {}
-
 parameter_types! {
 	pub const Enable2EVM: bool = true;
 	pub const Enable2WasmC: bool = true;
@@ -228,7 +226,7 @@ parameter_types! {
 	pub const DepositPerContract: u64 = 8 * DepositPerStorageByte::get();
 	pub const DepositPerStorageByte: u64 = 10_000;
 	pub const DepositPerStorageItem: u64 = 10_000;
-	pub RentFraction: Perbill = PerThing::from_rational(4u32, 10_000u32);
+	pub RentFraction: Perbill = PerThing::from_rational_approximation(4u32, 10_000u32);
 	pub const SurchargeReward: u64 = 500_000;
 	pub const MaxDepth: u32 = 100;
 	pub const MaxValueSize: u32 = 16_384;

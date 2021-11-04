@@ -1,5 +1,5 @@
 [package]
-name = "frontier-template-node"
+name = "cycan"
 version = "0.0.0"
 authors = ["Parity Technologies <admin@parity.io>"]
 description = "Frontier Node template"
@@ -19,66 +19,67 @@ log = "0.4.8"
 structopt = "0.3.8"
 jsonrpc-core = "15.0.0"
 jsonrpc-pubsub = "15.0.0"
+serde_json = "1.0.64"
 
-sp-api = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sp-blockchain = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-rpc-api = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-rpc = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-substrate-frame-rpc-system = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-pallet-transaction-payment-rpc = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-cli = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sp-core = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-executor = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-service = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sp-inherents = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-transaction-pool = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sp-transaction-pool = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-network = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-consensus-babe = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sp-consensus-babe = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-consensus-manual-seal = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sp-consensus = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-consensus = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sp-timestamp = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-pallet-evm = {version = "5.0.0", git = "https://github.com/paritytech/frontier.git", rev = "61bdbb3" }
-pallet-ethereum = {version = "3.0.0", git = "https://github.com/paritytech/frontier.git", rev = "61bdbb3" }
-pallet-dynamic-fee = {version = "3.0.0", git = "https://github.com/paritytech/frontier.git", rev = "61bdbb3" }
+sp-api = { version = "3.0.0" }
+sp-blockchain = { version = "3.0.0" }
+sc-rpc-api = { version = "0.9.0" }
+sc-rpc = { version = "3.0.0" }
+substrate-frame-rpc-system = { version = "3.0.0" }
+pallet-transaction-payment-rpc = { version = "3.0.0" }
+sc-cli = { version = "0.9.0" }
+sp-core = { version = "3.0.0" }
+sc-executor = { version = "0.9.0" }
+sc-service = { version = "0.9.0" }
+sp-inherents = { version = "3.0.0" }
+sc-transaction-pool = { version = "3.0.0" }
+sp-transaction-pool = { version = "3.0.0" }
+sc-network = { version = "0.9.0" }
+sc-consensus-babe = { version = "0.9.0" }
+sp-consensus-babe = { version = "0.9.0" }
+sc-consensus-manual-seal = { version = "0.9.0" }
+sp-consensus = { version = "0.9.0" }
+sc-consensus = { version = "0.9.0" }
+sp-timestamp = { version = "3.0.0" }
+pallet-evm = {version = "5.0.0", path = "../vendor/frontier/frame/evm" }
+pallet-ethereum = {version = "3.0.0", path = "../vendor/frontier/frame/ethereum" }
+pallet-dynamic-fee = {version = "3.0.0", path = "../vendor/frontier/frame/dynamic-fee" }
 
-sc-finality-grandpa = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sp-finality-grandpa = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-client-api = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sp-runtime = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-basic-authorship = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sp-block-builder = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-sc-telemetry = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
-frame-benchmarking-cli = { git = "https://github.com/paritytech/substrate", branch = "frontier" }
-frame-benchmarking = { git = "https://github.com/paritytech/substrate", branch = "frontier" }
+sc-finality-grandpa = { version = "0.9.0" }
+sp-finality-grandpa = { version = "3.0.0" }
+sc-client-api = { version = "3.0.0" }
+sp-runtime = { version = "3.0.0" }
+sc-basic-authorship = { version = "0.9.0" }
+sp-block-builder = { version = "3.0.0" }
+sc-telemetry = { version = "3.0.0" }
+frame-benchmarking-cli = { version = "3.0.0" }
+frame-benchmarking = { version = "3.0.0" }
 
 
-fc-consensus = {version = "2.0.0-dev", git = "https://github.com/paritytech/frontier.git", rev = "61bdbb3" }
-fp-consensus = {version = "1.0.0", git = "https://github.com/paritytech/frontier.git", rev = "61bdbb3" }
+fc-consensus = {version = "2.0.0-dev", path = "../vendor/frontier/client/consensus" }
+fp-consensus = {version = "1.0.0", path = "../vendor/frontier/primitives/consensus" }
 
-frontier-template-runtime = { path = "../runtime", default-features = false, features = ["std"] }
+cycan-runtime = { path = "../runtime", default-features = false, features = ["std"] }
 
-fc-rpc = {version = "2.0.0-dev", git = "https://github.com/paritytech/frontier.git", rev = "61bdbb3" }
-fp-rpc = {version = "2.1.0",  git = "https://github.com/paritytech/frontier.git", rev = "61bdbb3" }
-fc-rpc-core = {version = "1.1.0-dev", git = "https://github.com/paritytech/frontier.git", rev = "61bdbb3" }
-fc-db = {version = "2.0.0-dev", git = "https://github.com/paritytech/frontier.git", rev = "61bdbb3" }
-fc-mapping-sync = {version = "2.0.0-dev",  git = "https://github.com/paritytech/frontier.git", rev = "61bdbb3" }
+fc-rpc = {version = "2.0.0-dev", path = "../vendor/frontier/client/rpc" }
+fp-rpc = {version = "2.1.0",  path = "../vendor/frontier/primitives/rpc" }
+fc-rpc-core = {version = "1.1.0-dev", path = "../vendor/frontier/client/rpc-core"}
+fc-db = {version = "2.0.0-dev", path = "../vendor/frontier/client/db" }
+fc-mapping-sync = {version = "2.0.0-dev", path = "../vendor/frontier/client/mapping-sync" }
 
-# *** Add this 2 lines ***
-pallet-contracts  =  { version = '3.0.0' ,git = "https://github.com/paritytech/substrate.git", branch = "frontier"}
-pallet-contracts-rpc  =  { version = '3.0.0' ,git = "https://github.com/paritytech/substrate.git", branch = "frontier"}
-pallet-rgrandpa = { default-features = false, path = '../frame/rgrandpa', version = '3.0.0' }
-pallet-im-online = { version = "3.0.0-dev", git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
+
+pallet-contracts  =  { version = '3.0.0' }
+pallet-contracts-rpc  =  { version = '3.0.0' }
+pallet-rgrandpa = { default-features = false, path = '../frame/rgrandpa', version = '1.0.0' }
+pallet-im-online = { version = "3.0.0" }
 
 [build-dependencies]
-substrate-build-script-utils = { git = "https://github.com/paritytech/substrate.git", branch = "frontier" }
+substrate-build-script-utils = { version = "3.0.0" }
 
 [features]
 default = ["babe"]
-babe = ["frontier-template-runtime/babe"]
-manual-seal = ["frontier-template-runtime/manual-seal"]
+babe = ["cycan-runtime/babe"]
+manual-seal = ["cycan-runtime/manual-seal"]
 runtime-benchmarks = [
-	"frontier-template-runtime/runtime-benchmarks",
+	"cycan-runtime/runtime-benchmarks",
 ]

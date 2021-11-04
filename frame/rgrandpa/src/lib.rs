@@ -16,11 +16,11 @@ use pallet_grandpa::AuthorityList;
 use sp_runtime::{
 	traits::Zero,
 };
-#[cfg(test)]
-mod mock;
-
-#[cfg(test)]
-mod tests;
+// #[cfg(test)]
+// mod mock;
+//
+// #[cfg(test)]
+// mod tests;
 
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
