@@ -70,6 +70,7 @@ frame-benchmarking = { version = "3.0.0", default-features = false, optional = t
 frame-system-benchmarking = { version = "3.0.0", default-features = false,  optional = true }
 pallet-rgrandpa = { default-features = false, path = '../frame/rgrandpa', version = '1.0.0' }
 pallet-im-online = { version = "3.0.0", default-features = false }
+pallet-utility = { default-features = false, version = '3.0.0'}
 pallet-offences = { version = "3.0.0", default-features = false }
 pallet-offences-benchmarking = { version = "3.0.0",  default-features = false, optional = true }
 pallet-authorship = { version = "3.0.0", default-features = false }
@@ -149,6 +150,7 @@ std = [
 	"pallet-democracy/std",
 	"pallet-collective/std",
 	"pallet-scheduler/std",
+	"pallet-utility/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking",
