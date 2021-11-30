@@ -279,7 +279,7 @@ pub fn new_full(mut config: Configuration, cli: &Cli) -> Result<TaskManager, Ser
 		keystore: keystore_container.sync_keystore(),
 		task_manager: &mut task_manager,
 		transaction_pool: transaction_pool.clone(),
-		rpc_extensions_builder: rpc_extensions_builder,
+		rpc_extensions_builder,
 		on_demand: None,
 		remote_blockchain: None,
 		backend,

@@ -1042,6 +1042,7 @@ dependencies = [
  "sc-transaction-pool",
  "serde_json",
  "sp-api",
+ "sp-authority-discovery",
  "sp-block-builder",
  "sp-blockchain",
  "sp-consensus",
@@ -1069,6 +1070,7 @@ dependencies = [
  "frame-system-benchmarking",
  "frame-system-rpc-runtime-api",
  "log",
+ "pallet-authority-discovery",
  "pallet-authorship",
  "pallet-babe",
  "pallet-balances",
@@ -1090,6 +1092,7 @@ dependencies = [
  "pallet-im-online",
  "pallet-indices",
  "pallet-membership",
+ "pallet-multisig",
  "pallet-offences",
  "pallet-offences-benchmarking",
  "pallet-randomness-collective-flip",
@@ -1104,10 +1107,12 @@ dependencies = [
  "pallet-transaction-payment",
  "pallet-transaction-payment-rpc-runtime-api",
  "pallet-treasury",
+ "pallet-utility",
  "pallet-vm-bridge",
  "parity-scale-codec 2.0.1",
  "serde",
  "sp-api",
+ "sp-authority-discovery",
  "sp-block-builder",
  "sp-consensus-babe",
  "sp-core",
@@ -4092,6 +4097,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-authority-discovery"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a4510a281dae0c246c736fac1e1d51bf938db001b22265128ba6f918bc4e13e1"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-session",
+ "parity-scale-codec 2.0.1",
+ "serde",
+ "sp-application-crypto",
+ "sp-authority-discovery",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-authorship"
 version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4480,6 +4502,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-multisig"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "775556e56d1b9ab9a2437b8ea281bb16d7aadda8f309213d6d72d0a6a4c6fec4"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec 2.0.1",
+ "serde",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "pallet-offences"
 version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4731,6 +4769,22 @@ dependencies = [
  "pallet-balances",
  "parity-scale-codec 2.0.1",
  "serde",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-utility"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fcd63d1b336800d155ab60ee918afd111f7449e44cec936f460d555e850fa93b"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec 2.0.1",
+ "serde",
+ "sp-core",
+ "sp-io",
  "sp-runtime",
  "sp-std",
 ]
@@ -7203,6 +7257,19 @@ dependencies = [
  "parity-scale-codec 2.0.1",
  "serde",
  "sp-debug-derive",
+ "sp-std",
+]
+
+[[package]]
+name = "sp-authority-discovery"
+version = "3.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1031aceddda89a70b5dd888f177e1dbfccfb8889c43d0103a54edd3220d2ddce"
+dependencies = [
+ "parity-scale-codec 2.0.1",
+ "sp-api",
+ "sp-application-crypto",
+ "sp-runtime",
  "sp-std",
 ]
 

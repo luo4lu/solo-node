@@ -1,12 +1,12 @@
 [package]
 name = "cycan"
 version = "0.0.0"
-authors = ["Parity Technologies <admin@parity.io>"]
-description = "Frontier Node template"
+authors = ["Cycan Technologies <admin@cycan.io>"]
+description = "Cycan Node"
 edition = "2018"
 license = "Unlicense"
 build = "build.rs"
-homepage = "https://substrate.dev"
+homepage = "https://cycan.network/"
 repository = "https://github.com/paritytech/frontier/"
 publish = false
 
@@ -59,7 +59,7 @@ frame-benchmarking = { version = "3.0.0" }
 fc-consensus = {version = "2.0.0-dev", path = "../vendor/frontier/client/consensus" }
 fp-consensus = {version = "1.0.0", path = "../vendor/frontier/primitives/consensus" }
 
-cycan-runtime = { path = "../runtime", default-features = false, features = ["std"] }
+cycan-runtime = { path = "../runtime" }
 
 fc-rpc = {version = "2.0.0-dev", path = "../vendor/frontier/client/rpc" }
 fp-rpc = {version = "2.1.0",  path = "../vendor/frontier/primitives/rpc" }
@@ -70,8 +70,9 @@ fc-mapping-sync = {version = "2.0.0-dev", path = "../vendor/frontier/client/mapp
 
 pallet-contracts  =  { version = '3.0.0' }
 pallet-contracts-rpc  =  { version = '3.0.0' }
-pallet-rgrandpa = { default-features = false, path = '../frame/rgrandpa', version = '1.0.0' }
+pallet-rgrandpa = { path = '../frame/rgrandpa', version = '1.0.0' }
 pallet-im-online = { version = "3.0.0" }
+sp-authority-discovery = { version = "3.0.0" }
 
 [build-dependencies]
 substrate-build-script-utils = { version = "3.0.0" }

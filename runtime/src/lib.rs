@@ -71,7 +71,7 @@ use frame_support::traits::Currency;
 use frame_support::sp_runtime::AccountId32;
 use frame_system::pallet_prelude::OriginFor;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
-
+use sp_authority_discovery::AuthorityId as AuthorityDiscoveryId;
 /// Opaque types. These are used by the CLI to instantiate machinery that don't need to know
 /// the specifics of the runtime. They can then be made to be agnostic over specific formats
 /// of data like extrinsics, allowing for them to continue syncing the network through upgrades
@@ -94,6 +94,7 @@ pub mod opaque {
 			pub grandpa: Grandpa,
 			pub rgrandpa: RGrandpa,
 			pub im_online: ImOnline,
+			pub authority_discovery: AuthorityDiscovery,
 		}
 	}
 }
@@ -136,6 +137,13 @@ pub fn native_version() -> NativeVersion {
 
 type NegativeImbalance = <Balances as Currency<AccountId>>::NegativeImbalance;
 
+pub struct Author;
+impl OnUnbalanced<NegativeImbalance> for Author {
+	fn on_nonzero_unbalanced(amount: NegativeImbalance) {
+		Balances::resolve_creating(&Authorship::author(), amount);
+	}
+}
+
 pub struct DealWithFees;
 impl OnUnbalanced<NegativeImbalance> for DealWithFees {
 	fn on_unbalanceds<B>(mut fees_then_tips: impl Iterator<Item=NegativeImbalance>) {
@@ -147,7 +155,7 @@ impl OnUnbalanced<NegativeImbalance> for DealWithFees {
 				tips.ration_merge_into(80, 20, &mut split);
 			}
 			Treasury::on_unbalanced(split.0);
-			//Author::on_unbalanced(split.1);
+			Author::on_unbalanced(split.1);
 		}
 	}
 }
@@ -439,7 +447,7 @@ impl pallet_contracts::Config for Runtime {
 }
 
 parameter_types! {
-	pub const ExistentialDeposit: u128 = 500;
+	pub const ExistentialDeposit: u128 = 1 * DOLLARS;
 	// For weight estimation, we assume that the most locks on an individual account will be 50.
 	// This number may need to be adjusted in the future if this assumption no longer holds true.
 	pub const MaxLocks: u32 = 50;
@@ -904,6 +912,26 @@ impl pallet_membership::Config<pallet_membership::Instance1> for Runtime {
 	type MembershipInitialized = TechnicalCommittee;
 	type MembershipChanged = TechnicalCommittee;
 }
+
+impl pallet_authority_discovery::Config for Runtime {}
+
+parameter_types! {
+	// One storage item; key size is 32; value is size 4+4+16+32 bytes = 56 bytes.
+	pub const DepositBase: Balance = deposit(1, 88);
+	// Additional storage item size of 32 bytes.
+	pub const DepositFactor: Balance = deposit(0, 32);
+	pub const MaxSignatories: u16 = 100;
+}
+
+impl pallet_multisig::Config for Runtime {
+	type Event = Event;
+	type Call = Call;
+	type Currency = Balances;
+	type DepositBase = DepositBase;
+	type DepositFactor = DepositFactor;
+	type MaxSignatories = MaxSignatories;
+	type WeightInfo = pallet_multisig::weights::SubstrateWeight<Runtime>;
+}
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime where
@@ -933,7 +961,7 @@ construct_runtime!(
 		Session: pallet_session::{Module, Call, Storage, Event, Config<T>},
 		Contracts: pallet_contracts::{Module, Call, Config<T>, Storage, Event<T>},
 		GvmBridge: pallet_vm_bridge::{Module, Call, Storage, Event<T>},
-		RGrandpa: pallet_rgrandpa::{Module, Call, Storage, Event<T>},
+		RGrandpa: pallet_rgrandpa::{Module, Call, Storage, Event<T>, Config<T>},
 
 		//Treasury
 		Treasury: pallet_treasury::{Module, Call, Storage, Config, Event<T>},
@@ -947,6 +975,9 @@ construct_runtime!(
 		Elections: pallet_elections_phragmen::{Module, Call, Storage, Event<T>, Config<T>},
 		TechnicalMembership: pallet_membership::<Instance1>::{Module, Call, Storage, Event<T>, Config<T>},
 		Scheduler: pallet_scheduler::{Module, Call, Storage, Event<T>},
+
+		AuthorityDiscovery: pallet_authority_discovery::{Module, Call, Config},
+		Multisig: pallet_multisig::{Module, Call, Storage, Event<T>},
 	}
 );
 
