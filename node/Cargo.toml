@@ -1,6 +1,6 @@
 [package]
 name = "cycan"
-version = "0.0.0"
+version = "0.1.0"
 authors = ["Cycan Technologies <admin@cycan.io>"]
 description = "Cycan Node"
 edition = "2018"

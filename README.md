@@ -27,3 +27,12 @@ ea8a1d99f96b7680419eaccaa40c73d61ac1c19801392f064255d49d93bc02e7
 ./target/release/cycan   --base-path /tmp/charlie   --chain=beta   --port 30335 --ws-port 9947 --rpc-port 9935 --bootnodes "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWMwqgHC8bsZ7nixSagXUhZ6wG4qURLXCm4Q9YzzGr6Cee" "/ip4/127.0.0.1/tcp/30334/p2p/12D3KooWLfM4y2FHZxMrNmyD6Xon4tC55T1qCEtiB2mJq8WcpfYH" "/ip4/127.0.0.1/tcp/30335/p2p/12D3KooWG6n3bXcogzzmvstDMRBaYwSadHHnVCMzkF6NSt2pbAWm" "/ip4/127.0.0.1/tcp/30336/p2p/12D3KooWBpV8LsrpxdCLeEfWwVDaEtVijdB8hMtJ6mC1TaXUQFAF" --node-key 7311e3909937398c074a20a82470f9b3658dfe49cb2e9d2a7acfa6ca8ed3dc78   --validator --rpc-cors=all --no-mdns --keystore-path ./keystore/3
 
 ./target/release/cycan   --base-path /tmp/dave   --chain=beta   --port 30336 --ws-port 9948 --rpc-port 9936 --bootnodes "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWMwqgHC8bsZ7nixSagXUhZ6wG4qURLXCm4Q9YzzGr6Cee" "/ip4/127.0.0.1/tcp/30334/p2p/12D3KooWLfM4y2FHZxMrNmyD6Xon4tC55T1qCEtiB2mJq8WcpfYH" "/ip4/127.0.0.1/tcp/30335/p2p/12D3KooWG6n3bXcogzzmvstDMRBaYwSadHHnVCMzkF6NSt2pbAWm" "/ip4/127.0.0.1/tcp/30336/p2p/12D3KooWBpV8LsrpxdCLeEfWwVDaEtVijdB8hMtJ6mC1TaXUQFAF" --node-key ea8a1d99f96b7680419eaccaa40c73d61ac1c19801392f064255d49d93bc02e7   --validator --rpc-cors=all --no-mdns --keystore-path ./keystore/4
+
+
+
+docker
+
+./script/build.sh
+
+docker run -d -p 9933:9933 -p 9944:9944 -p 30333:30333 -p 9615:9615 cycan/cycan:v0.1.0  --tmp --dev  --rpc-cors all --unsafe-rpc-external --unsafe-ws-external --prometheus-external
+
