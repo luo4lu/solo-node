@@ -1,16 +1,16 @@
 [package]
-authors = ['Substrate DevHub <https://github.com/substrate-developer-hub>']
-description = 'FRAME pallet template for defining custom runtime logic.'
+authors = ['Anonymous']
 edition = '2018'
-homepage = 'https://substrate.dev'
-license = 'Unlicense'
-name = 'pallet-rgrandpa'
-readme = 'README.md'
-repository = 'https://github.com/substrate-developer-hub/substrate-node-template/'
-version = '1.0.0'
+name = 'pallet-esbind'
+version = "1.0.0"
+license = "Unlicense"
+homepage = "https://substrate.io"
+repository = "https://github.com/paritytech/substrate/"
+description = "bind etherum address and substrate address"
+readme = "README.md"
 
 [package.metadata.docs.rs]
-targets = ['x86_64-unknown-linux-gnu']
+targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 codec = { default-features = false, features = ['derive'], package = 'parity-scale-codec', version = '2.0.0' }
@@ -19,21 +19,24 @@ frame-support = { default-features = false, version = '3.0.0'}
 frame-benchmarking = { default-features = false, optional = true, version = '3.0.0' }
 sp-std = { default-features = false, version = '3.0.0' }
 log = { version = "0.4.14", default-features = false }
-pallet-session = { default-features = false, version = '3.0.0' }
 sp-runtime = { default-features = false, version = '3.0.0' }
 sp-core = { version = "3.0.0", default-features = false }
-pallet-staking = { default-features = false, version = '3.0.0' }
 sp-application-crypto = { version = "3.0.0", default-features = false }
 serde = { version = "1.0.101", optional = true }
-pallet-babe = { default-features = false, version = '3.0.0'  }
 sp-io = { version = "3.0.0", default-features = false }
-pallet-grandpa = { default-features = false, version = '3.0.0'  }
+pallet-evm = {version = "5.0.0", default-features = false, path = "../../vendor/frontier/frame/evm" }
+libsecp256k1 = { version = "0.6", default-features = false, features = ["hmac", "static-context"], optional = true }
+sha3 = { version = "0.8", default-features = false }
+
 [dev-dependencies]
 serde = { version = "1.0.119" }
-sp-core = {  version = '3.0.0' }
+sp-core = { version = '3.0.0' }
 sp-io = { version = '3.0.0' }
 sp-runtime = { version = '3.0.0'  }
-
+pallet-balances = { version = "3.0.0" }
+pallet-timestamp = { version = "3.0.0" }
+pallet-evm = {version = "5.0.0", path = "../../vendor/frontier/frame/evm" }
+pallet-ethereum = {version = "3.0.0", path = "../../vendor/frontier/frame/ethereum" }
 [features]
 default = ['std']
 std = [
@@ -43,21 +46,13 @@ std = [
 	'frame-benchmarking/std',
 	'sp-std/std',
 	"log/std",
-	'pallet-session/std',
 	'sp-runtime/std',
 	'sp-core/std',
-	'pallet-staking/std',
 	"sp-application-crypto/std",
 	"serde",
-	"pallet-babe/std",
 	'sp-io/std',
-	'pallet-grandpa/std',
+	'pallet-evm/std',
+	"libsecp256k1",
+	"libsecp256k1/std",
+	"sha3/std",
 ]
-runtime-benchmarks = [
-	'frame-benchmarking',
-	'frame-support/runtime-benchmarks',
-	'frame-system/runtime-benchmarks',
-]
-# Note: frame-support `try-runtime` feature is released after v3.
-#   Uncomment the following line when `frame-support` version > `3.0.0`.
-# try-runtime = ['frame-support/try-runtime']

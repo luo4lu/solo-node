@@ -495,7 +495,7 @@ impl pallet_evm::Config for Runtime {
 	type BlockHashMapping = pallet_ethereum::EthereumBlockHashMapping;
 	type CallOrigin = EnsureAddressTruncated;
 	type WithdrawOrigin = EnsureAddressTruncated;
-	type AddressMapping = HashedAddressMapping<BlakeTwo256>;
+	type AddressMapping = pallet_esbind::ESAddressMapping<BlakeTwo256, Runtime>;
 	type Currency = Balances;
 	type Event = Event;
 	type Runner = pallet_evm::runner::stack::Runner<Self>;
@@ -932,6 +932,12 @@ impl pallet_multisig::Config for Runtime {
 	type MaxSignatories = MaxSignatories;
 	type WeightInfo = pallet_multisig::weights::SubstrateWeight<Runtime>;
 }
+
+impl pallet_esbind::Config for Runtime {
+	type Event = Event;
+	type Currency = Balances;
+	type AddressMapping = pallet_esbind::ESAddressMapping<BlakeTwo256, Runtime>;
+}
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime where
@@ -978,6 +984,8 @@ construct_runtime!(
 
 		AuthorityDiscovery: pallet_authority_discovery::{Module, Call, Config},
 		Multisig: pallet_multisig::{Module, Call, Storage, Event<T>},
+
+		ESBind: pallet_esbind::{Module, Call, Storage, Event<T>},
 	}
 );
 
