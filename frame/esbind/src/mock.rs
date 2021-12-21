@@ -10,7 +10,9 @@ use frame_support::sp_runtime::AccountId32;
 use frame_support::traits::GenesisBuild;
 use sp_core::sr25519::Public;
 use sp_runtime::app_crypto::Ss58Codec;
-
+use sp_runtime::{
+	traits::{Verify, IdentifyAccount}, MultiSignature
+};
 
 type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
 type Block = frame_system::mocking::MockBlock<Test>;
@@ -29,10 +31,13 @@ frame_support::construct_runtime!(
 		EVM: pallet_evm::{Module, Config, Call, Storage, Event<T>},
 		Ethereum: pallet_ethereum::{Module, Call, Storage, Event, Config},
 		ESBind: pallet_esbind::{Module, Call, Storage, Event<T>},
-
+		Sudo: pallet_sudo::{Module, Call, Config<T>, Storage, Event<T>},
 	}
 );
-
+impl pallet_sudo::Config for Test {
+	type Event = Event;
+	type Call = Call;
+}
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 	pub const SS58Prefix: u8 = 42;
@@ -56,7 +61,7 @@ impl frame_system::Config for Test {
 	type BlockHashCount = BlockHashCount;
 	type Version = ();
 	type PalletInfo = PalletInfo;
-	type AccountData = pallet_balances::AccountData<u64>;
+	type AccountData = pallet_balances::AccountData<u128>;
 	type OnNewAccount = ();
 	type OnKilledAccount = ();
 	type SystemWeightInfo = ();
@@ -73,7 +78,7 @@ parameter_types! {
 }
 impl pallet_balances::Config for Test {
 	type MaxLocks = ();
-	type Balance = u64;
+	type Balance = u128;
 	type DustRemoval = ();
 	type Event = Event;
 	type ExistentialDeposit = ExistentialDeposit;
@@ -101,12 +106,14 @@ parameter_types! {
 	pub const ChainId: u64 = 41;
 	pub BlockGasLimit: U256 = U256::from(u32::max_value());
 }
+pub type Signature = MultiSignature;
+pub type AccountId = <<Signature as Verify>::Signer as IdentifyAccount>::AccountId;
 
 impl pallet_evm::Config for Test {
 	type FeeCalculator = FixedGasPrice;
 	type GasWeightMapping = ();
 	type BlockHashMapping = pallet_ethereum::EthereumBlockHashMapping;
-	type CallOrigin = pallet_evm::EnsureAddressTruncated;
+	type CallOrigin = pallet_evm::EnsureAddressRoot<AccountId>;
 	type WithdrawOrigin = pallet_evm::EnsureAddressTruncated;
 	type AddressMapping = pallet_esbind::ESAddressMapping<BlakeTwo256, Test>;
 	type Currency = Balances;
@@ -127,6 +134,8 @@ pub struct ExtBuilder{
 	accouts:std::collections::BTreeMap<H160, GenesisAccount>,
 	e2s:Vec<(H160, AccountId32)>,
 	s2e:Vec<(AccountId32, H160)>,
+	balances:Vec<(AccountId32, u128)>,
+	sudo_key:AccountId32,
 }
 
 impl Default for ExtBuilder {
@@ -135,6 +144,8 @@ impl Default for ExtBuilder {
 			accouts:BTreeMap::new(),
 			e2s:vec![],
 			s2e:vec![],
+			balances: Default::default(),
+			sudo_key:Default::default(),
 		}
 	}
 }
@@ -154,12 +165,24 @@ impl ExtBuilder {
 		self.s2e = s2e;
 		self
 	}
+	pub fn set_balances(mut self, balances:Vec<(AccountId32, u128)>) -> Self {
+		self.balances = balances;
+		self
+	}
+	pub fn set_sudo_key(mut self, sudo_key:AccountId32) -> Self {
+		self.sudo_key = sudo_key;
+		self
+	}
 	pub fn build(self) -> sp_io::TestExternalities {
 		// Build genesis storage according to the mock runtime.
 		let mut t = frame_system::GenesisConfig::default()
 			.build_storage::<Test>()
 			.unwrap();
-
+		pallet_balances::GenesisConfig::<Test> {
+			balances: self.balances,
+		}
+			.assimilate_storage(&mut t)
+			.unwrap();
 		pallet_evm::GenesisConfig { accounts:self.accouts }
 			.assimilate_storage::<Test>(&mut t)
 			.unwrap();
@@ -168,6 +191,9 @@ impl ExtBuilder {
 			s2e:self.s2e,
 		}.assimilate_storage(&mut t)
 			.unwrap();
+		pallet_sudo::GenesisConfig::<Test>{
+			key: self.sudo_key,
+		}.assimilate_storage(&mut t).unwrap();
 		let mut ext = sp_io::TestExternalities::new(t);
 		ext.execute_with(|| System::set_block_number(1));
 		ext

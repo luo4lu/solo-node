@@ -4357,6 +4357,7 @@ dependencies = [
  "pallet-balances",
  "pallet-ethereum",
  "pallet-evm",
+ "pallet-sudo",
  "pallet-timestamp",
  "parity-scale-codec 2.0.1",
  "serde",

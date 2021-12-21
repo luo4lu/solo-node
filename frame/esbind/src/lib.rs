@@ -2,7 +2,7 @@
 
 
 pub use pallet::*;
-use sp_core::{U256, H256, H160, Hasher, ecdsa};
+use sp_core::{ H256, Hasher, ecdsa};
 use sp_runtime::AccountId32;
 use pallet_evm::AddressMapping;
 use frame_support::{
