@@ -5,22 +5,19 @@ use super::*;
 use frame_system::RawOrigin;
 use frame_benchmarking::{benchmarks, whitelisted_caller, impl_benchmark_test_suite};
 use sp_std::{vec, vec::Vec, boxed::Box};
-
-#[allow(unused)]
-use crate::Module as rgrandpa;
+use frame_system::Origin;
 
 benchmarks! {
-	do_something {
-		let s in 0 .. 100;
+	set_parameter {
 		let caller: T::AccountId = whitelisted_caller();
-	}: _(RawOrigin::Signed(caller), s)
+	}: _(RawOrigin::Root, 100,T::BlockNumber::from(20 as u32))
 	verify {
-		assert_eq!(Something::<T>::get(), Some(s));
+		assert_eq!(CyclePercent::<T>::get(), 100);
 	}
 }
 
 impl_benchmark_test_suite!(
-	rgrandpa,
-	crate::mock::new_test_ext(),
+  	RGrandpa,
+  	crate::mock::ExtBuilder::default().build(),
 	crate::mock::Test,
 );

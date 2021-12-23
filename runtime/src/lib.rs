@@ -581,6 +581,7 @@ impl pallet_vm_bridge::Config for Runtime {
 
 impl pallet_rgrandpa::Config for Runtime {
 	type Event = Event;
+	type WeightInfo = pallet_rgrandpa::weights::SubstrateWeight<Runtime>;
 }
 impl<LocalCall> frame_system::offchain::CreateSignedTransaction<LocalCall> for Runtime
 	where
@@ -937,6 +938,7 @@ impl pallet_esbind::Config for Runtime {
 	type Event = Event;
 	type Currency = Balances;
 	type AddressMapping = pallet_esbind::ESAddressMapping<BlakeTwo256, Runtime>;
+	type WeightInfo = pallet_esbind::weights::SubstrateWeight<Runtime>;
 }
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
@@ -1361,9 +1363,8 @@ impl sp_consensus_babe::BabeApi<Block> for Runtime {
 			let mut batches = Vec::<BenchmarkBatch>::new();
 			let params = (&config, &whitelist);
 
-			add_benchmark!(params, batches, pallet_im_online, ImOnline);
-			add_benchmark!(params, batches, pallet_offences, OffencesBench::<Runtime>);
-			add_benchmark!(params, batches, pallet_evm, PalletEvmBench::<Runtime>);
+			//add_benchmark!(params, batches, pallet_collective, TechnicalCommittee);
+			add_benchmark!(params, batches, pallet_esbind, ESBind);
 			add_benchmark!(params, batches, pallet_rgrandpa, RGrandpa);
 			if batches.is_empty() { return Err("Benchmark not found for this pallet.".into()) }
 			Ok(batches)

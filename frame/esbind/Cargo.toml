@@ -35,9 +35,9 @@ sp-io = { version = '3.0.0' }
 sp-runtime = { version = '3.0.0'  }
 pallet-balances = { version = "3.0.0" }
 pallet-timestamp = { version = "3.0.0" }
-pallet-sudo = { version = "3.0.0"}
 pallet-evm = {version = "5.0.0", path = "../../vendor/frontier/frame/evm" }
 pallet-ethereum = {version = "3.0.0", path = "../../vendor/frontier/frame/ethereum" }
+
 [features]
 default = ['std']
 std = [
@@ -56,4 +56,9 @@ std = [
 	"libsecp256k1",
 	"libsecp256k1/std",
 	"sha3/std",
+]
+
+runtime-benchmarks = [
+	"libsecp256k1",
+	'frame-benchmarking',
 ]

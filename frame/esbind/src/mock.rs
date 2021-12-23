@@ -31,13 +31,9 @@ frame_support::construct_runtime!(
 		EVM: pallet_evm::{Module, Config, Call, Storage, Event<T>},
 		Ethereum: pallet_ethereum::{Module, Call, Storage, Event, Config},
 		ESBind: pallet_esbind::{Module, Call, Storage, Event<T>},
-		Sudo: pallet_sudo::{Module, Call, Config<T>, Storage, Event<T>},
 	}
 );
-impl pallet_sudo::Config for Test {
-	type Event = Event;
-	type Call = Call;
-}
+
 parameter_types! {
 	pub const BlockHashCount: u64 = 250;
 	pub const SS58Prefix: u8 = 42;
@@ -72,6 +68,7 @@ impl pallet_esbind::Config for Test {
 	type Event = Event;
 	type Currency = Balances;
 	type AddressMapping = pallet_esbind::ESAddressMapping<BlakeTwo256, Test>;
+	type WeightInfo = ();
 }
 parameter_types! {
 	pub const ExistentialDeposit: u64 = 0;
@@ -135,7 +132,6 @@ pub struct ExtBuilder{
 	e2s:Vec<(H160, AccountId32)>,
 	s2e:Vec<(AccountId32, H160)>,
 	balances:Vec<(AccountId32, u128)>,
-	sudo_key:AccountId32,
 }
 
 impl Default for ExtBuilder {
@@ -145,7 +141,6 @@ impl Default for ExtBuilder {
 			e2s:vec![],
 			s2e:vec![],
 			balances: Default::default(),
-			sudo_key:Default::default(),
 		}
 	}
 }
@@ -169,10 +164,7 @@ impl ExtBuilder {
 		self.balances = balances;
 		self
 	}
-	pub fn set_sudo_key(mut self, sudo_key:AccountId32) -> Self {
-		self.sudo_key = sudo_key;
-		self
-	}
+
 	pub fn build(self) -> sp_io::TestExternalities {
 		// Build genesis storage according to the mock runtime.
 		let mut t = frame_system::GenesisConfig::default()
@@ -191,9 +183,7 @@ impl ExtBuilder {
 			s2e:self.s2e,
 		}.assimilate_storage(&mut t)
 			.unwrap();
-		pallet_sudo::GenesisConfig::<Test>{
-			key: self.sudo_key,
-		}.assimilate_storage(&mut t).unwrap();
+
 		let mut ext = sp_io::TestExternalities::new(t);
 		ext.execute_with(|| System::set_block_number(1));
 		ext

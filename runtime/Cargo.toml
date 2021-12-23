@@ -167,4 +167,6 @@ runtime-benchmarks = [
 	"pallet-evm/runtime-benchmarks",
 	'pallet-rgrandpa/runtime-benchmarks',
 	"pallet-offences-benchmarking",
+	'pallet-collective/runtime-benchmarks',
+	'pallet-esbind/runtime-benchmarks',
 ]

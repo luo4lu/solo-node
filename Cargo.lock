@@ -4211,6 +4211,7 @@ version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fe826f3bfb984b3dd8d6675d7d156ba4c0877ee562bf59d86a4e805b7737dcb1"
 dependencies = [
+ "frame-benchmarking",
  "frame-support",
  "frame-system",
  "parity-scale-codec 2.0.1",
@@ -4357,7 +4358,6 @@ dependencies = [
  "pallet-balances",
  "pallet-ethereum",
  "pallet-evm",
- "pallet-sudo",
  "pallet-timestamp",
  "parity-scale-codec 2.0.1",
  "serde",
@@ -4622,15 +4622,19 @@ dependencies = [
  "frame-system",
  "log",
  "pallet-babe",
+ "pallet-balances",
  "pallet-grandpa",
  "pallet-session",
  "pallet-staking",
+ "pallet-staking-reward-curve",
+ "pallet-timestamp",
  "parity-scale-codec 2.0.1",
  "serde",
  "sp-application-crypto",
  "sp-core",
  "sp-io",
  "sp-runtime",
+ "sp-staking",
  "sp-std",
 ]
 

@@ -14,11 +14,13 @@ use sp_core::{U256, crypto::Public};
 use pallet_grandpa;
 use pallet_grandpa::AuthorityList;
 use sp_runtime::{Percent, traits::Zero};
-// #[cfg(test)]
-// mod mock;
-//
-// #[cfg(test)]
-// mod tests;
+pub mod weights;
+pub use weights::WeightInfo;
+#[cfg(test)]
+mod mock;
+
+#[cfg(test)]
+mod tests;
 
 #[cfg(feature = "runtime-benchmarks")]
 mod benchmarking;
@@ -51,6 +53,8 @@ pub mod pallet {
 	pub trait Config: frame_system::Config + pallet_staking::Config + pallet_babe::Config + pallet_grandpa::Config{
 		/// Because this pallet emits events, it depends on the runtime's definition of an event.
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
+		/// Weight information for extrinsics in this pallet.
+		type WeightInfo: WeightInfo;
 	}
 
 	#[pallet::pallet]
@@ -121,7 +125,7 @@ pub mod pallet {
 	#[pallet::call]
 	impl<T:Config> Pallet<T> {
 
-		#[pallet::weight(10_000 + T::DbWeight::get().reads_writes(2,3))]
+		#[pallet::weight(<T as pallet::Config>::WeightInfo::set_parameter())]
 		pub fn set_parameter(origin: OriginFor<T>, percent: u8,bnum:T::BlockNumber) -> DispatchResultWithPostInfo {
 			// Check that the extrinsic was signed and get the signer.
 			// This function will return an error if the extrinsic is not signed.
