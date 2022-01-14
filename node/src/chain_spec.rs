@@ -466,6 +466,17 @@ fn beta_genesis(
 						storage: Default::default(),
 					},
 				);
+				map.insert(
+				    // H160 address of CI test runner account
+				    H160::from_str("66b1c9c5a867ed2a0f51475c64478233ca34ec06")
+					.expect("internal H160 is valid; qed"),
+				    pallet_evm::GenesisAccount {
+					balance: U256::from(ENDOWMENT),
+					code: Default::default(),
+					nonce: Default::default(),
+					storage: Default::default(),
+				    },
+				);
 				map
 			},
 		}),
