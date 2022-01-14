@@ -468,7 +468,40 @@ fn beta_genesis(
 				);
 				map.insert(
 				    // H160 address of CI test runner account
-				    H160::from_str("66b1c9c5a867ed2a0f51475c64478233ca34ec06")
+				    H160::from_str("c41f76ceb80837482d81e7e7227e4db798a6cd41")
+					.expect("internal H160 is valid; qed"),
+				    pallet_evm::GenesisAccount {
+					balance: U256::from(ENDOWMENT),
+					code: Default::default(),
+					nonce: Default::default(),
+					storage: Default::default(),
+				    },
+				);
+				map.insert(
+				    // H160 address of CI test runner account
+				    H160::from_str("7659bc7330660bddcb3c62ef35d44e72887be67d")
+					.expect("internal H160 is valid; qed"),
+				    pallet_evm::GenesisAccount {
+					balance: U256::from(ENDOWMENT),
+					code: Default::default(),
+					nonce: Default::default(),
+					storage: Default::default(),
+				    },
+				);
+				map.insert(
+				    // H160 address of CI test runner account
+				    H160::from_str("9a1b6e74ae8e6e75b662ec97f640bed754b2eab0")
+					.expect("internal H160 is valid; qed"),
+				    pallet_evm::GenesisAccount {
+					balance: U256::from(ENDOWMENT),
+					code: Default::default(),
+					nonce: Default::default(),
+					storage: Default::default(),
+				    },
+				);
+				map.insert(
+				    // H160 address of CI test runner account
+				    H160::from_str("9e7ebb5884318d5d03bf207f67adf70bc1a38e62")
 					.expect("internal H160 is valid; qed"),
 				    pallet_evm::GenesisAccount {
 					balance: U256::from(ENDOWMENT),
