@@ -581,6 +581,7 @@ fn beta_genesis(
         }),
         pallet_authority_discovery: Some(AuthorityDiscoveryConfig { keys: vec![] }),
     }
+
 }
 
 /// Configure initial storage state for FRAME modules.
